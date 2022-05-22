@@ -1,0 +1,15 @@
+{% extends 'rrs_app/base.html' %}
+
+{% block content %}
+
+<h1>Welcome!</h1>
+
+{% if user.is_authenticated %}
+
+	<p>Username: {{user.username}}</p>
+
+	<p>Email: {{user.email}}</p>
+
+{% endif %}
+
+{% endblock %}
