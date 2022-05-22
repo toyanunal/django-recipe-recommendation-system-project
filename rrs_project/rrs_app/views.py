@@ -75,3 +75,6 @@ def change_password(request):
 
 def faq(request):
 	return render(request, 'rrs_app/faq.html', {})
+
+def search_recipe(request):
+    return render(request, 'rrs_app/search_recipe.html', {})

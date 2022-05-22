@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -19,22 +20,44 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="{% url 'home'  %}">Show Me What You Got</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'home'  %}">Show Me What You Got</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+    {# Will know if user is logged in or not#}
+    {% if user.is_authenticated %}
+
+    <ul class="navbar-nav ml-auto text-center">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'search_recipe' %}">Search Recipe</a>
+      </li>
+    </ul>
+
+    {% else %}
+
+    <ul class="navbar-nav ml-auto text-center">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'search_recipe' %}">Search Recipe (Continue as Guest)</a>
+      </li>
+    </ul>
+
+    {% endif %}
+
+
     <ul class="navbar-nav ml-auto">
 
-      {# Will know if user is logged in or not#}
+      {% if user.is_authenticated %}
 
       <li class="nav-item active">
-        <a class="nav-link-center" href="{% url 'faq' %}">FAQs</a>
+        <a class="nav-link" href="{% url 'faq' %}">FAQs</a>
       </li>
-
-      {% if user.is_authenticated %}
 
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -44,13 +67,17 @@
       </li>
 
 
-
       {% else %}
+
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'faq' %}">FAQs</a>
+      </li>
+
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'login' %}">Login</a>
       </li>
 
-        <li class="nav-item active">
+      <li class="nav-item active">
         <a class="nav-link" href="{% url 'register' %}">Register</a>
       </li>
 
