@@ -1,5 +1,7 @@
 {% extends 'rrs_app/base.html' %}
 
+
+
 {% block content %}
 
 <h1>Welcome!</h1>
@@ -11,5 +13,16 @@
 	<p>Email: {{user.email}}</p>
 
 {% endif %}
+
+<!-- Banner -->
+<div class="jumbotron">
+	<div class="container">
+		<h1 class="display-3" style="color: rgb(248, 240, 240);">Recipe Recommendation System</h1>
+		<p class="card-text" style="font-size: 25px; color: rgb(248, 240, 240);">Help You Cook With What You Have in Your Fridge</p>
+		<p><a class="btn btn-primary btn-lg" href="/search_recipe" role="button">Get Started &raquo;</a></p>
+	</div>
+</div>
+
+
 
 {% endblock %}

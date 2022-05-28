@@ -68,7 +68,7 @@ def change_password(request):
 			messages.success(request, ('You have edited your password'))
 			return redirect('home')
 	else: 		#passes in user information
-		form = PasswordChangeForm(user= request.user)
+		form = PasswordChangeForm(user=request.user)
 
 	context = {'form': form}
 	return render(request, 'rrs_app/change_password.html', context)
