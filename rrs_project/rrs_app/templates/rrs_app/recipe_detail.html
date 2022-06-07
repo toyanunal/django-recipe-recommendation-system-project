@@ -1,0 +1,22 @@
+{% extends 'rrs_app/base.html' %}
+
+{% block content %}
+
+
+<div class="jumbotron">
+  <h1>Welcome to the Recipe Detail Page</h1>
+  <h2>Recipe Details:</h2>
+  <p>Id: {{recipe_details.id}}</p>
+  <p>Name: {{recipe_details.title}}</p>
+  <p>Diet type: {{recipe_details.diet_type}}</p>
+  <p>Effort: {{recipe_details.effort}}</p>
+  <p>Meal type: {{recipe_details.meal_type}}</p>
+  <p>Decription: {{recipe_details.description}}</p>
+</div>
+
+<div class="container">
+  <p><a class='btn btn-warning' href="{% url 'recipe_list' %}">Back</a></p>
+</div>
+
+
+{% endblock %}

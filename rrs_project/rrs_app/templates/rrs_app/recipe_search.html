@@ -1,0 +1,59 @@
+{% extends 'rrs_app/base.html' %}
+
+{% block content %}
+
+
+
+<!-- *** Search input box *** -->
+<section class="search-section">
+  <h1 class="card-title">Search Recipes </h1>
+  <input type="text" class="form-control" id="tokenfield" value="{{ingredient.title}}"
+    placeholder="Type ingredient name and hit enter" />
+</section>
+
+
+<div class="jumbotron">
+
+  <h1>Welcome to the List of Ingredients Page!</h1>
+    <ol>
+      {% for ingredient in ingredients %}
+        <h2><li><a href="{{ingredient.slug}}/">{{ingredient.title}}</a></li></h2>
+      {% endfor %}
+    </ol>
+
+</div>
+
+<!-- *** Recipe cards *** -->
+<div id="recipe" class="row mb-2" style="margin-left: 23px; margin-right: 23px">
+  {% if list_recipes|length %}
+  {% for recipe in list_recipes %}
+  <div class="col-md-6">
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col-auto">
+        <img class="card-img-top" src={{recipe.img_url}} alt="recipe">
+      </div>
+      <div class="col p-4 d-flex flex-column position-static">
+        <strong class="d-inline-block mb-2 text-primary">{{recipe.name}}</strong>
+        <h3 class="mb-0">Ingredients</h3>
+        <ul class="Ingredients">
+          {% for ingredient in recipe.ingredients %}
+          <li class="mb-1 text-muted">{{ingredient}}</li>
+          {% endfor %}
+        </ul>
+        <h3 class="mb-0">Directions</h3>
+        <ul class="list-group list-group-flush Directions">
+          {% for direction in recipe.directions %}
+          <li class="list-group-item">{{direction}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <h5 style="padding-left: 0px;" class="card-text">No results were found. Try another search. </h5>
+  {% endif %}
+</div>
+
+
+{% endblock %}

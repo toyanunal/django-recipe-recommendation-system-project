@@ -1,0 +1,21 @@
+{% extends 'rrs_app/base.html' %}
+
+{% block content %}
+
+<div class="jumbotron">
+
+  <h1>Welcome to the List of Matching Recipes Page!</h1>
+    <ol>
+      {% for recipe in recipes %}
+        <h2><li><a href="{{recipe.slug}}/">{{recipe.title}}</a></li></h2>
+      {% endfor %}
+    </ol>
+
+</div>
+
+<div class="container">
+  <p><a class='btn btn-warning' href="{% url 'pantry_create' %}">Back</a></p>
+</div>
+
+
+{% endblock %}

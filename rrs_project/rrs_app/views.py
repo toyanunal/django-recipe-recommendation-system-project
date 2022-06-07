@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from django.contrib import messages
+from .models import Recipe, Ingredient, RecipeIngredient, UserIngredient
 from .forms import SignUpForm, EditProfileForm
+from . import models
+from . import forms
 
 # Create your views here.
 def home(request):
 	return render(request, 'rrs_app/home.html', {})
 
-def login_user (request):
+def login_user(request):
 	if request.method == 'POST': #if someone fills out form , Post it
 		username = request.POST['username']
 		password = request.POST['password']
@@ -57,7 +62,6 @@ def edit_profile(request):
 
 	context = {'form': form}
 	return render(request, 'rrs_app/edit_profile.html', context)
-	#return render(request, 'authenticate/edit_profile.html',{})
 
 def change_password(request):
 	if request.method =='POST':
@@ -76,5 +80,64 @@ def change_password(request):
 def faq(request):
 	return render(request, 'rrs_app/faq.html', {})
 
-def search_recipe(request):
-    return render(request, 'rrs_app/search_recipe.html', {})
+#def recipe_search(request):
+#    #all_ingredients = Ingredient.objects.all()
+#    #return render(request, 'rrs_app/recipe_search.html', {'all_ingredients':all_ingredients})
+#    return render(request, 'rrs_app/recipe_search.html', {})
+
+
+from django.views.generic import View,TemplateView,ListView,DetailView,CreateView,DeleteView,UpdateView
+
+
+class RecipeListView(ListView):
+    model = models.Recipe
+    context_object_name = 'recipes'
+    template_name = 'recipe_list.html' #default is also recipe_list.html
+
+class RecipeDetailView(DetailView):
+    model = models.Recipe
+    context_object_name = 'recipe_details'
+    template_name = 'recipe_detail.html' #default is also recipe_detail.html
+
+class IngredientListView(ListView):
+    model = models.Ingredient
+    context_object_name = 'ingredients'
+    template_name = 'recipe_search.html' #default is ingredient_list.html
+
+class UserIngredientCreateView(CreateView):
+    fields = ('ingredient','amount')
+    model = models.UserIngredient
+
+    def form_valid(self, form):
+
+        if self.request.user.is_authenticated:
+            #self.object = form.save(commit=False)
+            form.instance.user = self.request.user
+            #form.instance.ingredient = self.request.ingredient
+            #form.instance.amount = self.request.amount
+            #self.object.save()
+
+
+        else: #buraya guest'ler için user_id generate edilme ve pantry girişi ilave edilecek
+            pass
+
+        return super().form_valid(form)
+
+        #form.instance.user = self.request.user
+        #UserIngredient.objects.update_or_create(user=self.request.user, ingredient=self.request.ingredient, amount=self.request.ingredient)
+
+
+    def get_success_url(self):
+        #return reverse_lazy('pantry_create')
+        if self.request.POST.get('submit'):
+            return reverse_lazy('pantry_create')
+        elif self.request.POST.get('continue'):
+            return reverse_lazy('recipe_list')
+
+
+'''
+class RecipeIngredientListView(ListView):
+    model = models.RecipeIngredient
+    context_object_name = 'recipes'
+    template_name = 'recipe_list.html' #default is also recipe_list.html
+'''

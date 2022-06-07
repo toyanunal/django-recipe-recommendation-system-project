@@ -9,5 +9,9 @@ urlpatterns = [
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('change_password/', views.change_password, name='change_password'),
     path('faq/', views.faq, name='faq'),
-    path('search_recipe/', views.search_recipe, name='search_recipe'),
+    path('recipe_search/', views.IngredientListView.as_view(), name='recipe_search'),
+    path('recipe_list/',views.RecipeListView.as_view(),name='recipe_list'),
+    #path('recipe_list/',views.RecipeIngredientListView.as_view(),name='recipe_list'),
+    path('recipe_list/<str:slug>/',views.RecipeDetailView.as_view(),name='recipe_detail'),
+    path('pantry_create/',views.UserIngredientCreateView.as_view(),name='pantry_create'),
 ]
