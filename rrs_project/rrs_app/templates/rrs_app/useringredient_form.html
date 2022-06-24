@@ -2,35 +2,38 @@
 
 {% block content %}
 
-<h1>
-  {% if not form.instance.pk %}
-  Create/Update Your Pantry
-  {% else %}
-  Update UserIngredient
-  {% endif %}
-</h1>
-  <form method="POST">
+<br></br>
+
+<div class = "col-md-4 offset-md-4">
+
+  <h2> Create & Update Your Pantry </h2>
+
+  <form method="POST", action="{% url 'pantry_create' %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <p>
-      <label for="addcost">Additional cost:</label>
-      <input type="number" id="addcost" placeholder="0.00 TL" step="0.01" min="0" max="1000000">
-    </p>
-    <p>
-      <label for="port">Portion size:</label>
-      <select name="portion" id="portion">
-        <option value="1">1</option>
-        <option value="1/2">½</option>
-        <option value="1/4">¼</option>
-      </select>
-    </p>
-    <p>
-      <input type="submit" class='btn btn-primary' name="submit" value="Add">
-      <input type="submit" class='btn btn-primary' name="continue" onclick="alert('Your ingredients are added successfully!')" value="Continue">
-    </p>
+
+    <input type="submit" class="btn btn-primary" name="add" value="Add Item">
+    <input type="submit" class='btn btn-success' name="complete" value="Complete">
+    <a class='btn btn-warning' href="{% url 'input_form' %}">Back</a>
   </form>
 
+<br></br> <br></br>
 
-
+<h3> Available Ingredients: </h3>
+  <table class="demTable">
+    <thead>
+      <tr>
+        <th>Ingredient</th>
+        <th>Amount</th>
+			</tr>
+		</thead>
+    <tbody>
+      {% for ingredient_object in ingredient_list %}
+			<tr>
+        <td>{{ingredient_object.ingredient}}</td>
+        <td>{{ingredient_object.amount}}</td>
+      </tr>
+      {% endfor %}
+</div>
 
 {% endblock %}

@@ -1,7 +1,6 @@
 <!doctype html>
 {% load static %}
 <html lang="en">
-
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -12,53 +11,45 @@
 
     <title>Recipe Recommendation System</title>
 
-    {# Custom CSS#}
+    {# Custom CSS #}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-    {# Fonts#}
+    {# Fonts #}
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Russo+One" rel="stylesheet">
-
   </head>
 
   <body>
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="{% url 'home'  %}">Show Me What You Got</a>
+      <a href="{% url 'home' %}">
+        <img src="{% static 'images/SMWYG.png' %}" alt="" width="26" class="d-inline-block align-middle mr-2">
+      </a>
+      <a class="navbar-brand" href="{% url 'home' %}">Show Me What You Got</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-        {# Will know if user is logged in or not#}
         {% if user.is_authenticated %}
-
         <ul class="navbar-nav ml-auto text-center">
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'pantry_create' %}">Create Pantry</a>
+            <a class="nav-link" href="{% url 'input_form' %}">Get Started ({{user.username}})</a>
           </li>
         </ul>
-
         {% else %}
-
         <ul class="navbar-nav ml-auto text-center">
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'pantry_create' %}">Create Pantry (Continue as Guest)</a>
+            <a class="nav-link" href="{% url 'input_form' %}">Get Started (Continue as Guest)</a>
           </li>
         </ul>
-
         {% endif %}
 
-
         <ul class="navbar-nav ml-auto">
-
           {% if user.is_authenticated %}
-
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'faq' %}">FAQs</a>
           </li>
-
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
           </li>
@@ -66,46 +57,33 @@
             <a class="nav-link" href="{% url 'edit_profile' %}">Edit Profile</a>
           </li>
 
-
           {% else %}
-
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'faq' %}">FAQs</a>
           </li>
-
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'login' %}">Login</a>
           </li>
-
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'register' %}">Register</a>
           </li>
-
           {% endif %}
-
         </ul>
-
       </div>
     </nav>
 
-    <br/>
-
-    <div class ="container">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-danger alart-dismissable" role ="alert">
-            <button class="close" data-dismiss="alert">
-              <small><sup>x</sup></small>
-            </button>
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
+    <!-- Messages using JS -->
+    {% include 'rrs_app/message.html' %}
+    <script>
+      setTimeout(function(){
+        if ($('#msg').length > 0) {
+          $('#msg').remove();
+        }
+      }, 2000)
+    </script>
 
     {% block content %}
     {% endblock %}
-
-    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
