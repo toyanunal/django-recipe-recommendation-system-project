@@ -145,6 +145,13 @@ def useringredient_form_view(request):
 
             if 'complete' in request.POST:
                 ###TAYLAN'ın kısım
+                print(ingredient_list)
+
+
+
+
+
+
                 messages.success(request,('Matching recipes are listed.'))
                 return redirect('recipe_list')
 
@@ -184,6 +191,8 @@ def useringredient_form_view(request):
 
 from django.views.generic import View,TemplateView,ListView,DetailView,CreateView,DeleteView
 
+def recipe_form_view(request):
+    pass
 
 class RecipeListView(ListView):
     model = models.Recipe
