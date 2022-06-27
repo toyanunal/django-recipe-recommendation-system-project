@@ -5,15 +5,14 @@
 <div class="jumbotron">
 	<div class="container">
 		<br></br>
-		<!-- {% if user.is_authenticated %}
-			<h1 class="display-3" style="color: rgb(248, 240, 240);">Welcome {{user.username}}!</h1>
-		{% else %}
-			<h1 class="display-3" style="color: rgb(248, 240, 240);">Welcome Adventurer!</h1>
-		{% endif %} -->
 		<h1 class="display-4" style="color: rgb(248, 240, 240);">Recipe Recommendation System</h1>
 		<p class="card-text" style="font-size: 25px; color: rgb(248, 240, 240);">Help You Cook With What You Have in Your Fridge</p>
 		<br></br>
+		{% if user.is_authenticated and user.username|length < 32 %}
 		<p><a class="btn btn-primary btn-lg" href="{% url 'input_form' %}" role="button">Get Started &raquo;</a></p>
+		{% else %}
+		<p><a class="btn btn-primary btn-lg" href="{% url 'input_form' %}" role="button">Get Started as Guest &raquo;</a></p>
+		{% endif %}
 	</div>
 </div>
 

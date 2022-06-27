@@ -7,10 +7,12 @@ from . import models
 from . import forms
 from .models import Recipe, Ingredient, RecipeIngredient, UserIngredient, UserInfo
 from .forms import SignUpForm, EditProfileForm, MyPasswordChangeForm, UserIngredientForm, RecipeForm
+from django.contrib.auth.models import User
 
-# Create your views here.
+
 def home(request):
     return render(request, 'rrs_app/home.html', {})
+
 
 def login_user(request):
     if request.method == 'POST': #if someone fills out form , Post it
@@ -27,10 +29,12 @@ def login_user(request):
     else:
         return render(request, 'rrs_app/login.html', {})
 
+
 def logout_user(request):
     logout(request)
     messages.warning(request,('Successfully logged out.'))
     return redirect('home')
+
 
 def register_user(request):
     if request.method =='POST':
@@ -49,15 +53,20 @@ def register_user(request):
     context = {'form': form}
     return render(request, 'rrs_app/register.html', context)
 
+
 def edit_profile(request):
     if request.method =='POST':
-        form = EditProfileForm(request.POST, instance= request.user)
+        form = EditProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, ('Profile successfully edited.'))
             return redirect('home')
     else:         #passes in user information
-        form = EditProfileForm(instance= request.user)
+        if len(str(request.user)) >= 32:
+            form = EditProfileForm()
+            messages.error(request, ('Guests cannot edit profile info!'))
+            return redirect('input_form')
+        form = EditProfileForm(instance=request.user)
 
     context = {'form': form}
     return render(request, 'rrs_app/edit_profile.html', context)
@@ -76,6 +85,7 @@ def change_password(request):
     context = {'form': form}
     return render(request, 'rrs_app/change_password.html', context)
 
+
 def faq(request):
     return render(request, 'rrs_app/faq.html', {})
 
@@ -84,8 +94,15 @@ def input_form_view(request):
     form = forms.InputForm()
 
     if not request.user.is_authenticated:
-        messages.warning(request, ('Please login to continue.'))
-        return redirect('home')
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
+        request.user = request.session.session_key
+        try:
+            user = User.objects.create_user(username=request.user,email=request.user+'@anonymous.com',password=request.user)
+        except:
+            user = User.objects.get(username=request.user)
+        login(request,user)
+        messages.warning(request, ('Proceeding with a guest user.'))
 
     if request.method == 'POST':
         form = forms.InputForm(request.POST)
@@ -119,8 +136,8 @@ def input_form_view(request):
 def useringredient_form_view(request):
     form = forms.UserIngredientForm()
 
-    if not request.user.is_authenticated:
-        messages.warning(request, ('Please login to continue.'))
+    if not request.user.is_authenticated or len(str(request.user)) >= 32:
+        messages.warning(request, ('Redirecting to the home page!'))
         return redirect('home')
 
     ingredient_list = UserIngredient.objects.filter(user=request.user)
@@ -165,8 +182,8 @@ def useringredient_form_view(request):
 def recipe_form_view(request):
     form = forms.RecipeForm()
 
-    if not request.user.is_authenticated:
-        messages.warning(request, ('Please login to continue.'))
+    if not request.user.is_authenticated or len(str(request.user)) >= 32:
+        messages.warning(request, ('Redirecting to the home page!'))
         return redirect('home')
 
     # recipe_list = []
@@ -300,6 +317,11 @@ def recipe_form_view(request):
 
 
 def recipe_detail_view(request, slug):
+
+    if not request.user.is_authenticated or len(str(request.user)) >= 32:
+        messages.warning(request, ('Redirecting to the home page!'))
+        return redirect('home')
+
     rec = Recipe.objects.get(slug=slug)
     inf = UserInfo.objects.get(user=request.user)
 
