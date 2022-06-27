@@ -128,7 +128,7 @@ STATICFILES_DIRS = [
 # Media files
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'rrs_app/static/images'
 
 
 # Default primary key field type

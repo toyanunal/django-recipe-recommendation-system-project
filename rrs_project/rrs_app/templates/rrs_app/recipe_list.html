@@ -2,20 +2,43 @@
 
 {% block content %}
 
-<div class="jumbotron">
+<br></br>
 
-  <h1>Welcome to the List of Matching Recipes Page!</h1>
-    <ol>
-      {% for recipe in recipes %}
-        <h2><li><a href="{{recipe.slug}}/">{{recipe.title}}</a></li></h2>
-      {% endfor %}
-    </ol>
+<div class = "col-md-4 offset-md-4">
 
+  <h2> Filter and Sort Matching Recipes </h2>
+
+  <form method="POST", action="{% url 'recipe_list' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" class="btn btn-primary" name="filter" value="Filter Recipes">
+    <input type="submit" class="btn btn-success" name="reset" value="Reset">
+    <a class='btn btn-warning' href="{% url 'pantry_create' %}">Back</a>
+  </form>
+
+<br></br>
+
+<h3> List of Matching Recipes: </h3>
+
+<table class="demTable">
+  <thead>
+    <tr>
+      <th>Recipe</th>
+      <th>Meal type</th>
+      <th>Diet type</th>
+      <th>Effort</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for recipe_object in recipe_list %}
+    <tr>
+      <td><a href="{{recipe_object.slug}}/">{{recipe_object.title}}</a></td>
+      <td>{{recipe_object.meal_type}}</td>
+      <td>{{recipe_object.diet_type}}</td>
+      <td>{{recipe_object.effort}}</td>
+    </tr>
+    {% endfor %}
 </div>
-
-<div class="container">
-  <p><a class='btn btn-warning' href="{% url 'pantry_create' %}">Back</a></p>
-</div>
-
 
 {% endblock %}

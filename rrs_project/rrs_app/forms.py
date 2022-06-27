@@ -7,11 +7,6 @@ class EditProfileForm(UserChangeForm):
     password = forms.CharField(label="", widget=forms.TextInput(attrs={'type':'hidden'}))
 
     class Meta:
-        '''
-        Model metadata is “anything that’s not a field”, such as ordering options (ordering),
-        database table name (db_table), or human-readable names (verbose_name).
-        None are required, and adding class Meta to a model is completely optional.
-        '''
         model = User
         fields = ('username', 'email','password',)
 
@@ -78,8 +73,7 @@ class SignUpForm(UserCreationForm):
 
 from django.core import validators
 from django.core.validators import MaxValueValidator, MinValueValidator
-from .models import Ingredient, UserIngredient, UserInfo
-from django.db.models.fields import BLANK_CHOICE_DASH
+from .models import Ingredient, UserIngredient, UserInfo, Recipe
 
 PORTION_CHOICES = (
     (0, 'Portion size'),
@@ -115,7 +109,7 @@ class InputForm(forms.ModelForm):
 
 class UserIngredientForm(forms.ModelForm):
     ingredient = forms.ModelChoiceField(empty_label="Ingredient", required=False, queryset=Ingredient.objects.all(), label='Select ingredient:')
-    amount = forms.FloatField(required=False, validators=[MinValueValidator(0.000001), MaxValueValidator(1000000)], label='Enter amount:')
+    amount = forms.FloatField(required=False, validators=[MinValueValidator(0), MaxValueValidator(1000000)], label='Enter amount:')
 
     class Meta:
         model = UserIngredient
@@ -127,7 +121,6 @@ class UserIngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserIngredientForm, self).__init__(*args, **kwargs)
 
-        self.fields['ingredient'].widget.attrs.update({'class': 'special'})
         self.fields['ingredient'].widget.attrs['class'] = 'form-control'
         self.fields['ingredient'].widget.attrs['placeholder'] = 'Ingredient'
         self.fields['ingredient'].label = ''
@@ -136,4 +129,38 @@ class UserIngredientForm(forms.ModelForm):
         self.fields['amount'].widget.attrs['class'] = 'form-control'
         self.fields['amount'].widget.attrs['placeholder'] = 'Amount'
         self.fields['amount'].label = ''
-        self.fields['amount'].help_text = '<span class="form-text text-muted"><small>Required. Enter the amount you have for the selected ingredient.</span><ul class="form-text text-muted"><li>Amount is based on pieces (pcs) for the following ingredients: Egg.</li><li>Amount is based on milliliters (ml) for the following ingredients: Olive oil, Sunflower oil.</li><li>Amount is based on grams (gr) for all the remaining ingredients.</ul>'
+        self.fields['amount'].help_text = '<span class="form-text text-muted"><small>Required. Enter the amount you have for the selected ingredient.</span><ul class="form-text text-muted"> \
+        <li>Amount is based on pieces (pcs) for the following ingredients: Egg, Garlic, Parsley, Rosemary, Scallion and Zucchini.</li> \
+        <li>Amount is based on milliliters (ml) for the following ingredients: Cream, Milk, Olive oil, Sunflower oil.</li> \
+        <li>Amount is based on grams (gr) for all the remaining ingredients.</ul>'
+
+
+class RecipeForm(forms.ModelForm):
+    meal_type = forms.ModelChoiceField(empty_label="Meal type", required=False, queryset=Recipe.objects.values_list('meal_type', flat=True).distinct().order_by('meal_type'), to_field_name='meal_type')
+    diet_type = forms.ModelChoiceField(empty_label="Diet type", required=False, queryset=Recipe.objects.values_list('diet_type', flat=True).distinct().order_by('diet_type'), to_field_name='diet_type')
+    effort = forms.ModelChoiceField(empty_label="Effort", required=False, queryset=Recipe.objects.values_list('effort', flat=True).distinct().order_by('effort'), to_field_name='effort')
+
+    class Meta:
+        model = Recipe
+        fields = ('meal_type', 'diet_type', 'effort')
+
+    def clean(self):
+        all_clean_data = super().clean()
+
+    def __init__(self, *args, **kwargs):
+        super(RecipeForm, self).__init__(*args, **kwargs)
+
+        self.fields['meal_type'].widget.attrs['class'] = 'form-control'
+        self.fields['meal_type'].widget.attrs['placeholder'] = 'Meal type'
+        self.fields['meal_type'].label = ''
+        self.fields['meal_type'].help_text = '<span class="form-text text-muted"><small>Not required. Filter recipes based on their meal types.</small></span>'
+
+        self.fields['diet_type'].widget.attrs['class'] = 'form-control'
+        self.fields['diet_type'].widget.attrs['placeholder'] = 'Diet type'
+        self.fields['diet_type'].label = ''
+        self.fields['diet_type'].help_text = '<span class="form-text text-muted"><small>Not required. Filter recipes based on their diet types.</small></span>'
+
+        self.fields['effort'].widget.attrs['class'] = 'form-control'
+        self.fields['effort'].widget.attrs['placeholder'] = 'Effort'
+        self.fields['effort'].label = ''
+        self.fields['effort'].help_text = '<span class="form-text text-muted"><small>Not required. Filter recipes based on the effort required.</small></span>'

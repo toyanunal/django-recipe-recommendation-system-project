@@ -12,7 +12,10 @@ class Ingredient(models.Model):
     unit_cost = models.FloatField(default=0)
     # pip install pillow to use this!
     # Optional: pip install pillow --global-option="build_ext" --global-option="--disable-jpeg"
-    photo = models.ImageField(blank=True, upload_to='rrs_app/')
+    photo = models.ImageField(blank=True, upload_to='ingredient_photos/')
+
+    class Meta:
+        ordering = ('title',)
 
     def __str__(self):
         return self.title
@@ -27,7 +30,10 @@ class Recipe(models.Model):
     description = models.TextField()
     # pip install pillow to use this!
     # Optional: pip install pillow --global-option="build_ext" --global-option="--disable-jpeg"
-    photo = models.ImageField(blank=True, upload_to='rrs_app/')
+    photo = models.ImageField(blank=True, upload_to='recipe_photos/')
+
+    class Meta:
+        ordering = ('title',)
 
     def get_absolute_url(self):
         '''
@@ -47,7 +53,7 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         unique_together = (('recipe', 'ingredient'))
-        # constraints = [models.UniqueConstraint(fields=['recipe', 'ingredient'], name='unique_recipeingredient')]
+        ordering = ('recipe','ingredient')
 
     def __str__(self):
         return str(self.recipe) + "#" + str(self.ingredient) + "#" + str(self.amount)
@@ -56,10 +62,11 @@ class UserIngredient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.FloatField(default=0)
+    total_cost = models.FloatField(default=0, blank=True)
 
     class Meta:
         unique_together = (('user', 'ingredient'))
-        # constraints = [models.UniqueConstraint(fields=['user', 'ingredient'], name='unique_useringredient')]
+        ordering = ('user','ingredient')
 
     def __str__(self):
         return str(self.user) + "#" + str(self.ingredient) + "#" + str(self.amount)

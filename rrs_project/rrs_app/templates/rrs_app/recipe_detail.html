@@ -2,21 +2,56 @@
 
 {% block content %}
 
+<br></br>
 
-<div class="jumbotron">
-  <h1>Welcome to the Recipe Detail Page</h1>
-  <h2>Recipe Details:</h2>
-  <p>Id: {{recipe_details.id}}</p>
-  <p>Name: {{recipe_details.title}}</p>
-  <p>Diet type: {{recipe_details.diet_type}}</p>
-  <p>Effort: {{recipe_details.effort}}</p>
-  <p>Meal type: {{recipe_details.meal_type}}</p>
-  <p>Decription: {{recipe_details.description}}</p>
-</div>
+<div class = "col-md-6 offset-md-3">
 
-<div class="container">
-  <p><a class='btn btn-warning' href="{% url 'recipe_list' %}">Back</a></p>
-</div>
+  <h2> {{recipe_details.title}} </h2>
 
+  <p><a href="{{recipe_details.description}}" target="_blank">
+    <img src="{{ recipe_details.photo.url }}" alt="{{recipe_details.title}}" style="width: 800px; height: 500px;">
+  </a></p>
+
+  <form method="POST", action="{% url 'recipe_detail' recipe_details.slug %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <label class="switch">
+      <input type="checkbox" name="check">
+      <span class="slider round"></span>
+    </label>
+
+    <input type="submit" class="btn btn-primary" name="completed" value="Mark as Complete">
+    <a class='btn btn-warning' href="{% url 'recipe_list' %}">Back</a>
+  </form>
+
+  <br></br>
+
+  <h3> List of Insufficient Ingredients: </h3>
+
+  <span class="form-text text-muted"><small></span>
+    <ul class="form-text text-muted">
+      <li>Amount is based on pieces (pcs) for the following ingredients: Egg, Garlic, Parsley, Rosemary, Scallion and Zucchini.</li>
+      <li>Amount is based on milliliters (ml) for the following ingredients: Cream, Milk, Olive oil, Sunflower oil.</li>
+      <li>Amount is based on grams (gr) for all the remaining ingredients.</li>
+    </ul>
+
+    <table class="demTable">
+      <thead>
+        <tr>
+          <th>Ingredient</th>
+          <th>Amount</th>
+          <th>Cost (₺)</th>
+  			</tr>
+  		</thead>
+      <tbody>
+        {% for ingredient_object in ingredient_list %}
+  			<tr>
+          <td>{{ingredient_object.ingredient}}</td>
+          <td>{{ingredient_object.amount}}</td>
+          <td>{{ingredient_object.total_cost|floatformat:2}}</td>
+        </tr>
+        {% endfor %}
+  </div>
 
 {% endblock %}

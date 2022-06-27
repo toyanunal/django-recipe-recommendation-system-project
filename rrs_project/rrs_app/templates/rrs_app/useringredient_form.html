@@ -20,6 +20,7 @@
 <br></br> <br></br>
 
 <h3> Available Ingredients: </h3>
+
   <table class="demTable">
     <thead>
       <tr>
@@ -31,7 +32,7 @@
       {% for ingredient_object in ingredient_list %}
 			<tr>
         <td>{{ingredient_object.ingredient}}</td>
-        <td>{{ingredient_object.amount}}</td>
+        <td>{{ingredient_object.amount|floatformat:1}}</td>
       </tr>
       {% endfor %}
 </div>
