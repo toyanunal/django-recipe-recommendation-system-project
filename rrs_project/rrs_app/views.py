@@ -71,6 +71,7 @@ def edit_profile(request):
     context = {'form': form}
     return render(request, 'rrs_app/edit_profile.html', context)
 
+
 def change_password(request):
     if request.method =='POST':
         form = MyPasswordChangeForm(data=request.POST, user=request.user)
@@ -136,7 +137,7 @@ def input_form_view(request):
 def useringredient_form_view(request):
     form = forms.UserIngredientForm()
 
-    if not request.user.is_authenticated or len(str(request.user)) >= 32:
+    if not request.user.is_authenticated:
         messages.warning(request, ('Redirecting to the home page!'))
         return redirect('home')
 
@@ -182,10 +183,11 @@ def useringredient_form_view(request):
 def recipe_form_view(request):
     form = forms.RecipeForm()
 
-    if not request.user.is_authenticated or len(str(request.user)) >= 32:
+    if not request.user.is_authenticated:
         messages.warning(request, ('Redirecting to the home page!'))
         return redirect('home')
 
+    #####TOYAN'ın kısmı#####
     # recipe_list = []
     # cost_list = []
     # inf = UserInfo.objects.get(user=request.user)
@@ -215,7 +217,7 @@ def recipe_form_view(request):
     #         #print("Since total_diff {} is SMALLER than inf.addcost {} rec {} is ADDED to the list".format(total_diff, inf.addcost, rec))
     #         recipe_list.append(rec)
     #         cost_list.append(total_diff)
-
+    #####TOYAN'ın kısmı#####
 
     #####TAYLAN'ın kısmı#####
     ingredient_list = []
@@ -318,7 +320,7 @@ def recipe_form_view(request):
 
 def recipe_detail_view(request, slug):
 
-    if not request.user.is_authenticated or len(str(request.user)) >= 32:
+    if not request.user.is_authenticated:
         messages.warning(request, ('Redirecting to the home page!'))
         return redirect('home')
 
