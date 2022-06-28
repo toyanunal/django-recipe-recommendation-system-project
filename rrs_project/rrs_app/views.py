@@ -187,115 +187,113 @@ def recipe_form_view(request):
         messages.warning(request, ('Redirecting to the home page!'))
         return redirect('home')
 
-    #####TOYAN'ın kısmı#####
-    # recipe_list = []
-    # cost_list = []
-    # inf = UserInfo.objects.get(user=request.user)
-    #
-    # for rec in Recipe.objects.all():
-    #     total_diff = 0
-    #
-    #     for rec_item in RecipeIngredient.objects.filter(recipe=rec):
-    #         ing = Ingredient.objects.get(title=rec_item.ingredient)
-    #
-    #         try:
-    #             user_item = UserIngredient.objects.get(user=request.user, ingredient=rec_item.ingredient)
-    #             amount_diff = rec_item.amount * inf.portion - user_item.amount
-    #             #print("Try. rec: {} rec_item: {} rec_item.amount: {} inf.portion: {} user_item.amount: {} amount_diff: {}".format(rec, rec_item, rec_item.amount, inf.portion, user_item.amount, amount_diff))
-    #         except:
-    #             amount_diff = rec_item.amount
-    #             #print("Except. rec: {} rec_item: {} rec_item.amount: {} inf.portion: {} user_item.amount: NONE amount_diff: {}".format(rec, rec_item, rec_item.amount, inf.portion, amount_diff))
-    #
-    #         if amount_diff > 0:
-    #             if ing.unit_type != 'count':
-    #                 total_diff += amount_diff * ing.unit_cost / 1000
-    #             else:
-    #                 total_diff += amount_diff * ing.unit_cost
-    #             #print("Total diff of {} increased to {}".format(rec, total_diff))
-    #
-    #     if total_diff <= inf.addcost:
-    #         #print("Since total_diff {} is SMALLER than inf.addcost {} rec {} is ADDED to the list".format(total_diff, inf.addcost, rec))
-    #         recipe_list.append(rec)
-    #         cost_list.append(total_diff)
-    #####TOYAN'ın kısmı#####
-
-    #####TAYLAN'ın kısmı#####
-    ingredient_list = []
-    for i in Ingredient.objects.all():
-        try:
-            ingredient_object = UserIngredient.objects.get(user=request.user, ingredient=i)
-            ingredient_list.append(ingredient_object)
-        except:
-            pass
-
-    u_ing=[]
-    u_amnt=[]
-    selected_rec=[]
-    req_cost=[]
-    for i in ingredient_list:
-        u_ing.append(i.ingredient)
-        u_amnt.append(i.amount)
-
-    addcost=UserInfo.objects.get(user=request.user).addcost
-    portion=UserInfo.objects.get(user=request.user).portion
+    recipe_list = []
+    cost_list = []
+    inf = UserInfo.objects.get(user=request.user)
 
     for rec in Recipe.objects.all():
+        total_diff = 0
 
-        rec_ing=[]
-        rec_amnt=[]
-        R_ingredient_list=[]
+        for rec_item in RecipeIngredient.objects.filter(recipe=rec):
+            ing = Ingredient.objects.get(title=rec_item.ingredient)
 
-        for j in Ingredient.objects.all():
             try:
-                R_ingredient_object = RecipeIngredient.objects.get(recipe=rec, ingredient=j)
-                R_ingredient_list.append(R_ingredient_object)
+                user_item = UserIngredient.objects.get(user=request.user, ingredient=rec_item.ingredient)
+                amount_diff = rec_item.amount * inf.portion - user_item.amount
+                #print("Try. rec: {} rec_item: {} rec_item.amount: {} inf.portion: {} user_item.amount: {} amount_diff: {}".format(rec, rec_item, rec_item.amount, inf.portion, user_item.amount, amount_diff))
             except:
-                pass
+                amount_diff = rec_item.amount
+                #print("Except. rec: {} rec_item: {} rec_item.amount: {} inf.portion: {} user_item.amount: NONE amount_diff: {}".format(rec, rec_item, rec_item.amount, inf.portion, amount_diff))
 
-        for i in R_ingredient_list:
-            rec_ing.append(i.ingredient)
-            rec_amnt.append(i.amount)
-
-        comm=list(set(rec_ing).intersection(u_ing))
-        diff=list(set(rec_ing)-set(u_ing))
-        cost=0
-
-        if len(diff) >0:
-            for z in range(len(diff)):
-                index=rec_ing.index(diff[z])
-                temp_ing=Ingredient.objects.get(title=diff[z])
-                temp_cost=temp_ing.unit_cost
-                temp_utype=temp_ing.unit_type
-
-                if temp_utype == 'count':
-                    cost= cost + (rec_amnt[index]*portion*temp_cost)
+            if amount_diff > 0:
+                if ing.unit_type != 'count':
+                    total_diff += amount_diff * ing.unit_cost / 1000
                 else:
-                    cost= cost + (rec_amnt[index]*portion/1000)*temp_cost
+                    total_diff += amount_diff * ing.unit_cost
+                #print("Total diff of {} increased to {}".format(rec, total_diff))
 
-        if cost > addcost:
-            continue
+        if total_diff <= inf.addcost:
+            #print("Since total_diff {} is SMALLER than inf.addcost {} rec {} is ADDED to the list".format(total_diff, inf.addcost, rec))
+            recipe_list.append(rec)
+            cost_list.append(total_diff)
 
-        if len(comm) > 0:
-            for z in range(len(comm)):
-                c_index=rec_ing.index(comm[z])
-                u_index=u_ing.index(comm[z])
-                temp_ing=Ingredient.objects.get(title=comm[z])
-                temp_cost=temp_ing.unit_cost
-                temp_utype=temp_ing.unit_type
-                if (rec_amnt[c_index]*portion)-u_amnt[u_index] >0:
-                    if temp_utype == 'count':
-                        cost = cost + ((rec_amnt[c_index]*portion)-u_amnt[u_index])*temp_cost
-                    else:
-                        cost = cost + (((rec_amnt[c_index]*portion)-u_amnt[u_index])/1000)*temp_cost
-        if cost > addcost:
-            continue
-
-        selected_rec.append(rec)
-        req_cost.append(cost)
-
-    recipe_list = selected_rec
-    cost_list = req_cost
-    #####TAYLAN'ın kısmı#####
+    # #####TAYLAN'ın kısmı#####
+    # ingredient_list = []
+    # for i in Ingredient.objects.all():
+    #     try:
+    #         ingredient_object = UserIngredient.objects.get(user=request.user, ingredient=i)
+    #         ingredient_list.append(ingredient_object)
+    #     except:
+    #         pass
+    #
+    # u_ing=[]
+    # u_amnt=[]
+    # selected_rec=[]
+    # req_cost=[]
+    # for i in ingredient_list:
+    #     u_ing.append(i.ingredient)
+    #     u_amnt.append(i.amount)
+    #
+    # addcost=UserInfo.objects.get(user=request.user).addcost
+    # portion=UserInfo.objects.get(user=request.user).portion
+    #
+    # for rec in Recipe.objects.all():
+    #
+    #     rec_ing=[]
+    #     rec_amnt=[]
+    #     R_ingredient_list=[]
+    #
+    #     for j in Ingredient.objects.all():
+    #         try:
+    #             R_ingredient_object = RecipeIngredient.objects.get(recipe=rec, ingredient=j)
+    #             R_ingredient_list.append(R_ingredient_object)
+    #         except:
+    #             pass
+    #
+    #     for i in R_ingredient_list:
+    #         rec_ing.append(i.ingredient)
+    #         rec_amnt.append(i.amount)
+    #
+    #     comm=list(set(rec_ing).intersection(u_ing))
+    #     diff=list(set(rec_ing)-set(u_ing))
+    #     cost=0
+    #
+    #     if len(diff) >0:
+    #         for z in range(len(diff)):
+    #             index=rec_ing.index(diff[z])
+    #             temp_ing=Ingredient.objects.get(title=diff[z])
+    #             temp_cost=temp_ing.unit_cost
+    #             temp_utype=temp_ing.unit_type
+    #
+    #             if temp_utype == 'count':
+    #                 cost= cost + (rec_amnt[index]*portion*temp_cost)
+    #             else:
+    #                 cost= cost + (rec_amnt[index]*portion/1000)*temp_cost
+    #
+    #     if cost > addcost:
+    #         continue
+    #
+    #     if len(comm) > 0:
+    #         for z in range(len(comm)):
+    #             c_index=rec_ing.index(comm[z])
+    #             u_index=u_ing.index(comm[z])
+    #             temp_ing=Ingredient.objects.get(title=comm[z])
+    #             temp_cost=temp_ing.unit_cost
+    #             temp_utype=temp_ing.unit_type
+    #             if (rec_amnt[c_index]*portion)-u_amnt[u_index] >0:
+    #                 if temp_utype == 'count':
+    #                     cost = cost + ((rec_amnt[c_index]*portion)-u_amnt[u_index])*temp_cost
+    #                 else:
+    #                     cost = cost + (((rec_amnt[c_index]*portion)-u_amnt[u_index])/1000)*temp_cost
+    #     if cost > addcost:
+    #         continue
+    #
+    #     selected_rec.append(rec)
+    #     req_cost.append(cost)
+    #
+    # recipe_list = selected_rec
+    # cost_list = req_cost
+    # #####TAYLAN'ın kısmı#####
 
     if request.method == 'POST':
         form = forms.RecipeForm(request.POST)
