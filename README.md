@@ -1,5 +1,5 @@
-# Recipe Recommendation System: Show Me What You Got
-This is the repo for the Recipe Recommendation System Project.
+# Recipe Recommendation System
+This is the repo for our recipe cecommendation system project called "Show Me What You Got (SMWYG)".
 
 The SMWYG system allows users to search for recipes by selecting a group of ingredients, portion and an additional cost. These ingredients can be based on what users choose to eat or which ingredients are readily available in their homes. The system lists all recipes with selected ingredients in addition to missing ingredients that are within the given additional cost range. After that, users can filter recipes based on meal types (i.e., breakfast, lunch, dinner, dessert and snack); based on certain diet types (i.e., healthy, low carb, vegan and vegetarian); and based on effort (i.e., easy, moderate, hard). After filtering recipes, users can select a certain recipe and see the names, recipe amounts, and missing amounts, as well as additional cost of purchasing those the insufficient ingredients. Users can sign up and log in to the system. Registered users can keep track of their inventory in terms of ingredient names and quantities. Users can easily remove ingredients of completed recipes from their pantry by marking them as complete.
 
