@@ -6,9 +6,9 @@
 
 <div class = "col-md-6 offset-md-3">
 
-  <h2> {{recipe_details.title}} </h2>
+  <h2> {{ recipe_details.title }} </h2>
 
-  <p><a href="{{recipe_details.description}}" target="_blank">
+  <p><a href="{{ recipe_details.description }}" target="_blank">
     <img src="{{ recipe_details.photo.url }}" alt="{{recipe_details.title}}" style="width: 800px; height: 500px;">
   </a></p>
 
@@ -27,7 +27,7 @@
 
   <br></br>
 
-  <h3> List of Insufficient Ingredients: </h3>
+  <h3> List of the ingredients of {{ recipe_details.title }}: </h3>
 
   <span class="form-text text-muted"><small></span>
     <ul class="form-text text-muted">
@@ -40,16 +40,18 @@
       <thead>
         <tr>
           <th>Ingredient</th>
-          <th>Amount</th>
-          <th>Cost (₺)</th>
+          <th>Recipe Amount</th>
+          <th>Missing Amount</th>
+          <th>Add. Cost (₺)</th>
   			</tr>
   		</thead>
       <tbody>
         {% for ingredient_object in ingredient_list %}
   			<tr>
-          <td>{{ingredient_object.ingredient}}</td>
-          <td>{{ingredient_object.amount}}</td>
-          <td>{{ingredient_object.total_cost|floatformat:2}}</td>
+          <td>{{ingredient_object.0.ingredient}}</td>
+          <td>{{ingredient_object.0.amount}}</td>
+          <td>{{ingredient_object.1.amount}}</td>
+          <td>{{ingredient_object.1.total_cost|floatformat:2}}</td>
         </tr>
         {% endfor %}
   </div>

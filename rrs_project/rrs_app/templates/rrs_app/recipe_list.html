@@ -28,6 +28,7 @@
       <th>Meal type</th>
       <th>Diet type</th>
       <th>Effort</th>
+      <th>Add. Cost (₺)</th>
     </tr>
   </thead>
   <tbody>
@@ -37,6 +38,7 @@
       <td>{{recipe_object.meal_type}}</td>
       <td>{{recipe_object.diet_type}}</td>
       <td>{{recipe_object.effort}}</td>
+      <td>{{recipe_object.total_cost|floatformat:2}}</td>
     </tr>
     {% endfor %}
 </div>

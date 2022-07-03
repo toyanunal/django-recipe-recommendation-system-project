@@ -2,7 +2,6 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
-#1)from autoslug import AutoSlugField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.text import slugify
 
@@ -12,7 +11,7 @@ class Ingredient(models.Model):
     unit_cost = models.FloatField(default=0)
     # pip install pillow to use this!
     # Optional: pip install pillow --global-option="build_ext" --global-option="--disable-jpeg"
-    photo = models.ImageField(blank=True, upload_to='ingredient_photos/')
+    photo = models.ImageField(null=True, upload_to='ingredient_photos/')
 
     class Meta:
         ordering = ('title',)
@@ -22,7 +21,6 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     title = models.CharField(max_length=128)
-    #1)slug = AutoSlugField(populate_from="title", unique=True)
     slug = models.SlugField(allow_unicode=True,unique=True)
     meal_type = models.CharField(max_length=16)
     diet_type = models.CharField(max_length=16)
@@ -30,7 +28,8 @@ class Recipe(models.Model):
     description = models.TextField()
     # pip install pillow to use this!
     # Optional: pip install pillow --global-option="build_ext" --global-option="--disable-jpeg"
-    photo = models.ImageField(blank=True, upload_to='recipe_photos/')
+    photo = models.ImageField(null=True, upload_to='recipe_photos/')
+    total_cost = models.FloatField(default=0, blank=True)
 
     class Meta:
         ordering = ('title',)
